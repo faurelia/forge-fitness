@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { LogoutMenu } from "../sidebar/logout-menu";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -29,7 +30,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link href="/admin" />}>
+            <SidebarMenuButton
+              size="lg"
+              render={<Link href="/admin/dashboard" />}
+            >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary  text-sidebar-primary-foreground">
                 <Dumbbell className="size-4" />
               </div>
@@ -96,9 +100,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <Settings /> Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem variant="destructive">
-                    <LogOut /> Logout
-                  </DropdownMenuItem>
+                  <LogoutMenu />
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>

@@ -12,13 +12,13 @@ import type { LucideIcon } from "lucide-react";
 export const navItems = [
   {
     title: "Overview",
-    url: "/admin",
+    url: "/admin/dashboard",
     icon: ChartNoAxesCombined,
     isActive: true,
     items: [
       {
         title: "Dashboard",
-        url: "/admin",
+        url: "/admin/dashboard",
       },
       {
         title: "Analytics",

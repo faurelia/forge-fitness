@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -12,7 +12,7 @@ export default function NotFound() {
         <p className="text-muted-foreground py-2">
           We couldn&apos;t find the page you are looking for
         </p>
-        <Link href="/admin" className={buttonVariants({ size: "lg" })}>
+        <Link href="/" className={buttonVariants({ size: "lg" })}>
           Back to home page
         </Link>
       </div>

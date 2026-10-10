@@ -3,9 +3,6 @@ import { Google_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toast";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/general/sidebar";
-import { Header } from "@/components/general/header";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const font = Google_Sans({ subsets: ["latin"], variable: "--font-sans" });
@@ -29,13 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset>
-              <Header />
-              <main className="p-12">{children}</main>
-            </SidebarInset>
-          </SidebarProvider>
+          {children}
 
           <Toaster />
         </ThemeProvider>
