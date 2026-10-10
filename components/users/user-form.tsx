@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { Field, FieldError, FieldGroup } from "../ui/field";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { User } from "@/lib/db/schema";
+import { User } from "@/lib/db/schema/auth";
 import { useForm } from "react-hook-form";
 import { UserFormValues, userSchema } from "@/lib/validations/user";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,7 +29,6 @@ export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
     defaultValues: {
       name: user?.name ?? "",
       email: user?.email ?? "",
-      jobTitle: user?.jobTitle ?? "",
     },
   });
 
@@ -72,15 +71,6 @@ export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
           />
         </Field>
 
-        <Field>
-          <Label htmlFor="jobTitle">Job Title</Label>
-          <Input id="jobTitle" {...register("jobTitle")} />
-          <FieldError
-            errors={
-              errors.jobTitle ? [{ message: errors.jobTitle.message }] : []
-            }
-          />
-        </Field>
         <Field orientation="horizontal">
           <Button
             type="button"

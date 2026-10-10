@@ -7,4 +7,4 @@ export const usersTable = pgTable("users", (table) => ({
   jobTitle: table.varchar().notNull(),
 }));
 
-export type User = typeof usersTable.$inferSelect;
+// export type User = typeof usersTable.$inferSelect;

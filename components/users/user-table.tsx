@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { User } from "@/lib/db/schema";
+import { User } from "@/lib/db/schema/auth";
 import { useState } from "react";
 import { MoreHorizontalIcon, Edit, Trash2, Plus } from "lucide-react";
 import { Button } from "../ui/button";
@@ -76,7 +76,6 @@ export default function UserTable({ users }: userTableProps) {
             <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Job Title</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -97,13 +96,6 @@ export default function UserTable({ users }: userTableProps) {
                 }
               >
                 {user.email}
-              </TableCell>
-              <TableCell
-                onClick={(e) =>
-                  handleColumnClick(e.currentTarget.textContent ?? "")
-                }
-              >
-                {user.jobTitle}
               </TableCell>
               <TableCell>
                 <DropdownMenu>

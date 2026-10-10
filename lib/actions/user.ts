@@ -2,7 +2,7 @@
 
 import { eq } from "drizzle-orm";
 import { db } from "../db";
-import { usersTable } from "../db/schema";
+import { user } from "../db/schema/auth";
 import { revalidatePath } from "next/cache";
 import { userSchema } from "../validations/user";
 
@@ -16,9 +16,9 @@ export async function createUser(input: unknown) {
     };
   }
 
-  const [user] = await db.insert(usersTable).values(result.data).returning();
+  const [createdUser] = await db.insert(user).values(result.data).returning();
 
-  if (!user) {
+  if (!createdUser) {
     return { success: false, message: "Failed to create user" };
   }
 
@@ -37,13 +37,13 @@ export async function updateUser(id: number, input: unknown) {
     };
   }
 
-  const [user] = await db
-    .update(usersTable)
+  const [updatedUser] = await db
+    .update(user)
     .set(result.data)
-    .where(eq(usersTable.id, +id))
+    .where(eq(user.id, +id))
     .returning();
 
-  if (!user) {
+  if (!updatedUser) {
     return { success: false, message: "Failed to update user" };
   }
 
@@ -53,5 +53,5 @@ export async function updateUser(id: number, input: unknown) {
 }
 
 export async function getUsers() {
-  return await db.select().from(usersTable);
+  return await db.select().from(user);
 }
