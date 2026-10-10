@@ -1,59 +1,97 @@
 "use client";
 
-import { createUser } from "@/lib/actions/user";
+import { createUser, updateUser } from "@/lib/actions/user";
 import { Button } from "../ui/button";
-import { Field, FieldGroup } from "../ui/field";
+import { Field, FieldError, FieldGroup } from "../ui/field";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { useActionState } from "react";
-import { Spinner } from "../ui/spinner";
 import { User } from "@/lib/db/schema";
-
-type FormState = {
-  success: boolean;
-  message: string;
-};
+import { useForm } from "react-hook-form";
+import { UserFormValues, userSchema } from "@/lib/validations/user";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "../ui/toast";
 
 type UserFormProps = {
   user: User | null;
-  onSubmit: (prevState: FormState, formData: FormData) => Promise<FormState>;
+  onSuccess?: () => void;
+  onCancel: () => void;
 };
 
-export default function UserForm({ user, onSubmit }: UserFormProps) {
-  const [state, formAction, isPending] = useActionState(onSubmit, {
-    success: false,
-    message: "",
+export default function UserForm({ user, onSuccess, onCancel }: UserFormProps) {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<UserFormValues>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      name: user?.name ?? "",
+      email: user?.email ?? "",
+      jobTitle: user?.jobTitle ?? "",
+    },
   });
+
+  async function onSubmit(data: UserFormValues) {
+    const result = user
+      ? await updateUser(user.id, data)
+      : await createUser(data);
+
+    if (!result.success) {
+      setError("root", {
+        message: result.message,
+      });
+      return;
+    }
+
+    toast.add({
+      type: "success",
+      description: user ? "User has been updated." : "User has been created.",
+    });
+
+    reset();
+    onSuccess?.();
+  }
+
   return (
-    <form action={formAction}>
-      {user && <input type="hidden" name="id" value={user.id} />}
+    <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
-        <div className="grid grid-cols-2 gap-4">
-          <Field>
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" defaultValue={user?.name} />
-          </Field>
-          <Field>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              defaultValue={user?.email}
-            />
-          </Field>
-        </div>
+        <Field>
+          <Label htmlFor="name">Name</Label>
+          <Input id="name" {...register("name")} />
+          <FieldError
+            errors={errors.name ? [{ message: errors.name.message }] : []}
+          />
+        </Field>
+        <Field>
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" {...register("email")} />
+          <FieldError
+            errors={errors.email ? [{ message: errors.email.message }] : []}
+          />
+        </Field>
+
         <Field>
           <Label htmlFor="jobTitle">Job Title</Label>
-          <Input id="jobTitle" name="jobTitle" defaultValue={user?.jobTitle} />
+          <Input id="jobTitle" {...register("jobTitle")} />
+          <FieldError
+            errors={
+              errors.jobTitle ? [{ message: errors.jobTitle.message }] : []
+            }
+          />
         </Field>
         <Field orientation="horizontal">
-          <Button type="button" variant="outline" disabled={isPending}>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isSubmitting}
+            onClick={onCancel}
+          >
             Cancel
           </Button>
-          <Button type="submit" disabled={isPending}>
-            Submit
-            {isPending && <Spinner data-icon="inline-end" />}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : user ? "Update User" : "Create User"}
           </Button>
         </Field>
       </FieldGroup>

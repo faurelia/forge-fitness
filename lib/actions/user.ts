@@ -4,19 +4,19 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
 import { revalidatePath } from "next/cache";
+import { userSchema } from "../validations/user";
 
-export async function createUser(
-  prevState: { success: boolean; message: string },
-  formData: FormData,
-) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const jobTitle = formData.get("jobTitle") as string;
+export async function createUser(input: unknown) {
+  const result = userSchema.safeParse(input);
 
-  const [user] = await db
-    .insert(usersTable)
-    .values({ name, email, jobTitle })
-    .returning();
+  if (!result.success) {
+    return {
+      success: false,
+      message: "Invalid user data",
+    };
+  }
+
+  const [user] = await db.insert(usersTable).values(result.data).returning();
 
   if (!user) {
     return { success: false, message: "Failed to create user" };
@@ -27,18 +27,19 @@ export async function createUser(
   return { success: true, message: "User added" };
 }
 
-export async function updateUser(
-  prevState: { success: boolean; message: string },
-  formData: FormData,
-) {
-  const id = formData.get("id");
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const jobTitle = formData.get("jobTitle") as string;
+export async function updateUser(id: number, input: unknown) {
+  const result = userSchema.safeParse(input);
+
+  if (!result.success) {
+    return {
+      success: false,
+      message: "Invalid user data",
+    };
+  }
 
   const [user] = await db
     .update(usersTable)
-    .set({ name, email, jobTitle })
+    .set(result.data)
     .where(eq(usersTable.id, +id))
     .returning();
 

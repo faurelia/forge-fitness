@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/table";
 import { User } from "@/lib/db/schema";
 import { useState } from "react";
-import { MoreHorizontalIcon, Edit, Trash2 } from "lucide-react";
+import { MoreHorizontalIcon, Edit, Trash2, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { updateUser } from "@/lib/actions/user";
 import UserForm from "./user-form";
@@ -38,12 +38,38 @@ type userTableProps = {
 
 export default function UserTable({ users }: userTableProps) {
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   const handleColumnClick = async (text: string) => {
     await navigator.clipboard.writeText(text);
   };
   return (
     <>
+      <div className="flex justify-end pb-4">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogTrigger
+            render={
+              <Button variant="default">
+                Add User <Plus />
+              </Button>
+            }
+          ></DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add User</DialogTitle>
+              <DialogDescription>
+                Create a new user profile and assign their role details.
+              </DialogDescription>
+            </DialogHeader>
+            <UserForm
+              user={null}
+              onSuccess={() => setIsDialogOpen(false)}
+              onCancel={() => setIsDialogOpen(false)}
+            />
+          </DialogContent>
+        </Dialog>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -123,7 +149,13 @@ export default function UserTable({ users }: userTableProps) {
               assignments.
             </DialogDescription>
           </DialogHeader>
-          {editingUser && <UserForm user={editingUser} onSubmit={updateUser} />}
+          {editingUser && (
+            <UserForm
+              user={editingUser}
+              onSuccess={() => setEditingUser(null)}
+              onCancel={() => setEditingUser(null)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>
