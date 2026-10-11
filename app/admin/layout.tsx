@@ -34,7 +34,7 @@ async function ProtectedAdmin({
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <main className="p-12">{children}</main>
+        <main className="py-6 px-12">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

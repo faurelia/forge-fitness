@@ -1,3 +1,9 @@
-export default function SchedulePage() {
-  return <h1>SchedulePage</h1>;
+import { ScheduleAdmin } from "@/components/schedule-admin";
+
+export default function AdminSchedulePage() {
+  return (
+    <div className="mx-auto w-full max-w-7xl p-6">
+      <ScheduleAdmin />
+    </div>
+  );
 }
